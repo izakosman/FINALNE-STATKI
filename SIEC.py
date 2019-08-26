@@ -9,21 +9,27 @@ import socket
 
 class Laczenie:
     def __init__(self):
-        self.klient=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server='25.67.177.163'
         self.port=9999
         self.addr=(self.server, self.port)
         self.id=self.connect()
         #self.id=self.connect()                                      #musi byc id zyby bylo wiadome, ktory player jest ktory
-        print(self.id)                                              # powinno printowac ze polaczono
-
+                                                   # powinno printowac ze polaczono
+    #def get_pos(self):
+     #   return self.pos
 
     def connect(self):
         try:
-            self.klient.connect(self.addr)
-            return self.klient.recv(2048).decode()
+            self.client.connect(self.addr)
+            return self.client.recv(2048).decode()
         except:
             pass
-    def
-
+    def wysylaj (self, data):                                                            #metoda ktora bedzie wysylane
+        try:
+            self.client.send(str.encode(data))
+            return self.client.recv(2048).decode()
+        except socket.error as e :
+            print (e)
 n=Laczenie()
+print(n.wysylaj('aaaaaaa'))

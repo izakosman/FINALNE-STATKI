@@ -51,6 +51,6 @@ def thr_klient(conn):                                                           
             break
 while True :                                                                            # czyli wszystko ustawimy to wrzucamy do while abu ciagle probowac nawiazac polaczenie
     conn, addr= s.accept()                                                              # akceptuj kazde przychodzace polaczene, magazynuj conn i addr czyli ip addres
-    print('polaczono cie z: ', addr)                                             # kiedy juz znajdzie polaczenie poinformuj o tym
+    print('polaczono cie  do: ', addr)                                             # kiedy juz znajdzie polaczenie poinformuj o tym
 
     start_new_thread(thr_klient, (conn, ))

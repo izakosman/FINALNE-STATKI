@@ -4,7 +4,8 @@ import random as ran
 import sys
 import _thread
 
-
+from TWOJAPLANSZA import TWOJAPLANSZA
+from STRZELANIE_W_PRZECIWNIKA import STRZELANIE_W_PRZECIWNIKA
 
 pygame.init()
 
@@ -66,98 +67,19 @@ szerokosc_plansza = 30
 wysokosc_plansza = 30
 przerwy_kratki = 2                                            # margines miedzy kazda z komorek planszy
 
-# ______________________________________________________________________STWORZ 2 WYMIAROWY ARRAY
 
-plansza_klik = []
-for wiersz in range(10):                                      # czyli chcemy miec 10 wierszy w naszym array
-                                                              # pusty array ktory bedzie mial liste wszystkich koorek dla tego wirsza
-    plansza_klik.append([])
-    for kolumna in range(10):
-        plansza_klik[wiersz].append(0)                        #tam gdzie jest zero zmien na rzeczywisty wiersz
+def initTwojaPlansza(screen):
+    twojaPlansza = TWOJAPLANSZA()
+    twojaPlansza.window_gameBoard(screen)
 
+def initPlanszaPrzeciwnika(screen):
+    strzelaniePrzeciwnika = STRZELANIE_W_PRZECIWNIKA()
+    strzelaniePrzeciwnika.window_gameBoard(screen)
 
-    print('plansza klik: ',plansza_klik)
-plansza_klik[1][5] = 0                                        # scal kolumne 1 i wiersz 5 do 1 (bo zaczyna sie od 0)
+def eventShoot(screen):
+    strzelaniePrzeciwnika = STRZELANIE_W_PRZECIWNIKA()
+    strzelaniePrzeciwnika.plansza_klikaj(screen)
 
-print('plansza klik: ', plansza_klik)
-
-def plansza_klikaj():
-    done = False
-
-    # ________________________________________________________________________POBIERANIE KOORDYNATOW Z PLANSZY
-
-    while not done:
-        for event in pygame.event.get():                                           # gdy uzytkownik cos zrobi
-            if event.type == pygame.QUIT:                                          # jesli kliknie wyjdz
-                done = True                                                        # zaznacz ze skoncz prace
-
-            elif event.type == pygame.MOUSEBUTTONDOWN:                             # gdy uzytkownik kliknie pobierz
-                pos = pygame.mouse.get_pos()                                       # koordynaty kursora
-                kolumna = pos[0] //  ( szerokosc_plansza + przerwy_kratki  )         # zmien kolumne i y na koordynaty typowe dla planszy
-                wiersz = pos[1] // ( wysokosc_plansza + przerwy_kratki )           # czyli zamiast 123213,93287437 bedzie np 1 1
-                plansza_klik[wiersz][kolumna] = 1                                  # stworz jedna lokacje z wiersza i kolumny
-                print("Click ", pos, "koordynaty planszy: ", wiersz, kolumna)
-
-
-        # ______________________________________________________________________RYSOWANIE PLANSZY
-
-        for wiersz in range(10):                                                 #dla 10 wierszy
-            for kolumna in range(10):                                            #dla 10 kolumn
-                kolor = gray3                                                    #kolor ppol
-                if plansza_klik[wiersz][kolumna] == 1:
-                    kolor = GREEN
-                pygame.draw.rect(pokaz_gre, kolor,[(((  przerwy_kratki + szerokosc_plansza ) * kolumna + przerwy_kratki + 580 )),
-                                  (((  przerwy_kratki + wysokosc_plansza  ) * wiersz + przerwy_kratki +100  )),
-                                       szerokosc_plansza,wysokosc_plansza])
-
-
-                                                                                # Limit to 60 frames na sekunde
-        clock.tick(60)
-
-                                                                                # update  screen
-        pygame.display.flip()
-
-'''
-# __________________________________________________________________________________________________________________
-#                                           TWOJA PLANSZA                                                           |
-# __________________________________________________________________________________________________________________|
-twojestatki = (np.load('GRACZ_STATKI.npy', mmap_mode='r'))
-
-twojapl=[]
-
-def twoja_plansza():
-    done = False
-
-    for wiersz in range(10):                                  #czyli chcemy miec 10 wierszy w naszym array
-                                                             #pusty array ktory bedzie mial liste wszystkich koorek dla tego wirsza
-        twojapl.append([])
-        for kolumna in range(10):
-            twojapl[wiersz].append(0)
-
-    twojapl[1][5] = 0                                            ## scal kolumne 1 i wiersz 5 do 1 (bo zaczyna sie od 0)
-
-    pygame.init()
-    print(twojapl)
-    twojaplansza = twojestatki
-
-    while not done:
-        for event in pygame.event.get():                                    # gdy uzytkownik cos zrobi
-            if event.type == pygame.QUIT:                                   # jesli kliknie wyjdz
-                done = True                                                 # zaznacz ze skoncz prace
-
-        for wiersz in range(10):
-            for kolumna in range(10):
-                kolor = BLACK
-                if plansza[wiersz][kolumna] != 0:
-                    kolor = GREEN
-                pygame.draw.rect(pokaz_gre,kolor,[(przerwy_kratki + szerokosc_plansza) * kolumna + przerwy_kratki,(przerwy_kratki + wysokosc_plansza) * wiersz + przerwy_kratki, wysokosc_plansza, wysokosc_plansza])
-
-        # Limit to 60 frames na sekunde
-        clock.tick(60)
-
-        # Go ahead and update the screen with what we've drawn.
-        pygame.display.flip()
-'''
 # __________________________________________________________________________________________________________________
 #                                            GLOWNA PETLA                                                           |
 # __________________________________________________________________________________________________________________|
@@ -174,8 +96,7 @@ def pvp():
 
                                                                             # blit czyliwszyskoscalamy
     pokaz_gre.blit(tlo, (0, 0))
-    pygame.display.flip()###
-    print('wybrano  pvp')
+    pygame.display.flip()
 
     gamemen = True
     while gamemen:
@@ -194,18 +115,18 @@ def pvp():
 
             pokaz_gre.blit(planszatekst,(40,26))
             pokaz_gre.blit(planszatekst, (520, 26))
-            pokaz_gre.blit(plansza, (520, 86))
-            pokaz_gre.blit(plansza, (40, 86))
+            pokaz_gre.blit(pygame.transform.scale(plansza, (363, 363)), (520, 86))
+            pokaz_gre.blit(pygame.transform.scale(plansza, (363, 363)), (40, 86))
+            initTwojaPlansza(pokaz_gre)
+            initPlanszaPrzeciwnika(pokaz_gre)
             pokaz_gre.blit(czat,(40,470))
             pokaz_gre.blit(czat2,(40,525))
             pokaz_gre.blit(wyjdz, (430, 730))
             pokaz_gre.blit(text1, text1rect)
             pokaz_gre.blit(text2, text2rect)
             pokaz_gre.blit(text3, text3rect)
-            pokaz_gre.blit(plansza_klikaj())
-
-
-
+            pygame.display.update()
+            pokaz_gre.blit(eventShoot(pokaz_gre))
 
 
 
@@ -214,8 +135,5 @@ def pvp():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
-
-                pygame.display.update()
-
 
 pvp()

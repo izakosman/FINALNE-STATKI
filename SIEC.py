@@ -10,7 +10,8 @@ import socket
 class Laczenie:
     def __init__(self):
         self.client=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server='25.67.177.163'
+        #self.server='25.67.177.163'
+        self.server = 'localhost'
         self.port=9999
         self.addr=(self.server, self.port)
         self.id=self.connect()

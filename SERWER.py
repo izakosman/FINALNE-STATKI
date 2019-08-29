@@ -5,7 +5,8 @@ from _thread import *
 import threading
 import sys
 
-server='25.67.177.163'
+#server='25.67.177.163'
+server='localhost'
 port=9999                                                                         #wiele portow i duzo z nich nie jest uzywane dla taich portow jak ten
 
 

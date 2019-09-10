@@ -5,18 +5,16 @@ import os
 import numpy as np
 import random as ran
 
+from SIEC import SIEC
+
+def sentShoot(data):
+    siec = SIEC()
+    siec.wysylaj(data)
 
 class STRZELANIE_W_PRZECIWNIKA():
     def window_gameBoard(self, screen):
         planszaprzeciwnika = (np.load('PRZECIWNIK_PLANSZA.npy', mmap_mode='r'))
-
-        BLACK = (0, 0, 0)
-        WHITE = (255, 255, 255)
-        GREEN = (0, 255, 0)
         RED = (255, 0, 0)
-        gray1=(199,199,199)
-        gray2=(232,232,232)
-        gray3=(220,220,220)
 
         #_______________________________________________________wysokosc i szerokosc planszy
         szerokosc_plansza = 30
@@ -115,6 +113,8 @@ class STRZELANIE_W_PRZECIWNIKA():
                     pygame.draw.rect(screen, kolor, [540 + ((przerwy_kratki + szerokosc_plansza) * kolumna + przerwy_kratki), 106 + ((przerwy_kratki + wysokosc_plansza) * wiersz + przerwy_kratki), szerokosc_plansza, wysokosc_plansza])
 
                     pygame.display.flip()
+
+                    sentShoot([wiersz, kolumna])
 
         clock.tick(60)
 

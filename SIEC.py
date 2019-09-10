@@ -1,13 +1,13 @@
-import socket
+import socket, json
 
-
+from ODBIERAJ import ODBIERAJ
 
 #_______________________________________________________________________
 #                 CONNECTING TO SERVER                                  |
 #_______________________________________________________________________|
                                                                     #class ktora bedzie laczyc nas z serverem
 
-class Laczenie:
+class SIEC:
     def __init__(self):
         self.client=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #self.server='25.67.177.163'
@@ -26,11 +26,12 @@ class Laczenie:
             return self.client.recv(2048).decode()
         except:
             pass
+
     def wysylaj (self, data):                                                            #metoda ktora bedzie wysylane
         try:
-            self.client.send(str.encode(data))
-            return self.client.recv(2048).decode()
+            self.client.send(json.dumps(data).encode())
+            return
         except socket.error as e :
             print (e)
-n=Laczenie()
-print(n.wysylaj('aaaaaaa'))
+
+

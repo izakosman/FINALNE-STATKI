@@ -4,10 +4,15 @@ import random as ran
 import sys
 import _thread
 
-from TWOJAPLANSZA import TWOJAPLANSZA
-from STRZELANIE_W_PRZECIWNIKA import STRZELANIE_W_PRZECIWNIKA
 
-pygame.init()
+from ODBIERAJ import ODBIERAJ
+
+import socket
+from _thread import *
+
+from threading import Thread
+import threading
+import sys
 
 
 # __________________________________________________________________________________________________________________
@@ -18,6 +23,50 @@ pokaz_gre_wysokosc=800
 pokaz_gre=pygame.display.set_mode((pokaz_gre_szerokosc,pokaz_gre_wysokosc))
 pygame.display.set_caption("Gra  w statki - I.Kosman")
 clock = pygame.time.Clock()
+
+
+
+server='localhost'
+port=9999                                                                         #wiele portow i duzo z nich nie jest uzywane dla taich portow jak ten
+
+#    ____________________________________________________________________________________________
+#   |                                       SOCKET                                               |
+#   |____________________________________________________________________________________________|
+
+s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)                                  # TYPY POLACZEN, JESLI LACZYMY SIE DO IVP4
+                                                                                      #bindujemy serwer i port do socketa
+try:
+    s.bind((server,port))
+except socket.error as e:                                                             #jezeli port bedzie zajty to to exceptuemy
+    str(e)
+                                                                                      # zastawiamy polaczenie
+s.listen(2)                                                                           #otwieramy port 2 bo chce, aby tylko 2 ludzi miala mozliwosc sie polaczyc
+
+print('Rozpoczęto pracę serwera. Oczekiwanie na połączenie...')
+
+
+def odbieraj(conn):
+    data = ODBIERAJ().odbieraj(conn)
+    wiersz = data[0]
+    kolumna = data[1]
+    twojaPlansza = TWOJAPLANSZA()
+    twojaPlansza.reciveShoot(pokaz_gre, kolumna, wiersz)
+
+def watekOdbieraj(s):
+    while True:  # czyli wszystko ustawimy to wrzucamy do while abu ciagle probowac nawiazac polaczenie
+        conn, addr = s.accept()  # akceptuj kazde przychodzace polaczene, magazynuj conn i addr czyli ip addres
+        print('polaczono cie  do: ', addr)  # kiedy juz znajdzie polaczenie poinformuj o tym
+
+        start_new_thread(odbieraj, (conn,))
+
+thread = Thread(target = watekOdbieraj, args = (s, ))
+thread.start()
+
+from TWOJAPLANSZA import TWOJAPLANSZA
+from STRZELANIE_W_PRZECIWNIKA import STRZELANIE_W_PRZECIWNIKA
+
+pygame.init()
+
 
 # __________________________________________________________________________________________________________________
 #                                         PLIKI ZEW I KOLORY                                                        |
@@ -79,6 +128,7 @@ def initPlanszaPrzeciwnika(screen):
 def eventShoot(screen):
     strzelaniePrzeciwnika = STRZELANIE_W_PRZECIWNIKA()
     strzelaniePrzeciwnika.plansza_klikaj(screen)
+
 
 # __________________________________________________________________________________________________________________
 #                                            GLOWNA PETLA                                                           |
